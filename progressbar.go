@@ -22,7 +22,7 @@ import (
 const (
 	AutoWidth          = 0
 	UnknownTotal       = 0
-	DefaultReportCount = 50
+	defaultReportCount = 50
 )
 
 type Unit struct {
@@ -53,7 +53,7 @@ type SpeedInfo struct {
 func (s *SpeedInfo) Report(n int) {
 	if s.reports == nil {
 		if s.reportCount == 0 {
-			s.reportCount = DefaultReportCount
+			s.reportCount = defaultReportCount
 		}
 
 		s.reports = ring.New(s.reportCount)
@@ -129,8 +129,8 @@ func NewProgressBar(total int) *ProgressBar {
 		total:              total,
 		Padding:            2,
 		speeds:             make(map[int]*SpeedInfo),
-		ReportCount:        DefaultReportCount,
-		OverallReportCount: DefaultReportCount,
+		ReportCount:        defaultReportCount,
+		OverallReportCount: defaultReportCount,
 		ReportsPerSample:   25,
 	}
 }
