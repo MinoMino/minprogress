@@ -4,7 +4,7 @@
 
 A progress bar for Go that can also track the speed of progress.
 
-Example used in conjuction with [minterm](https://github.com/MinoMino/minterm)
+Example of it used in conjuction with [minterm](https://github.com/MinoMino/minterm).
 ![GIF of progress bar using minterm.](http://minomino.org/screenshots/bYBB_2016-11-23_05-28-25.gif)
 
 # Usage
