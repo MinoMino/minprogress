@@ -1,3 +1,12 @@
+// A progress bar for arbitrary units, which can also keep track of
+// the speed of progress in terms of units/second. Safe for concurrent use.
+//
+// To keep track of speeds, have each "progress maker" report how many
+// units of progress it has done at desired intervals using Report()
+// with a unique identifier. If such a progress maker has finished its
+// task, have it report it with Done(). For every X amount of reports,
+// it will sample the average speed of all the progress makers and include
+// it as part of the formatted progress bar string.
 package minprogress
 
 import (
@@ -77,15 +86,6 @@ func (s *SpeedInfo) Average() float64 {
 	return sum / float64(i)
 }
 
-// A progress bar for arbitrary units, which can also keep track of
-// the speed of progress in terms of units/second. Safe for concurrent use.
-//
-// To keep track of speeds, have each "progress maker" report how many
-// units of progress it has done at desired intervals using Report()
-// with a unique identifier. If such a progress maker has finished its
-// task, have it report it with Done(). For every X amount of reports,
-// it will sample the average speed of all the progress makers and include
-// it as part of the formatted progress bar string.
 type ProgressBar struct {
 	// The characters used for the empty and full parts of the bar itself.
 	// Uses ░ and █ by default, respectively.
@@ -209,8 +209,7 @@ func (p *ProgressBar) avgOverallSpeedAndTotal() (avg float64, total int) {
 	return
 }
 
-// Gets the whole formatted progress bar, with an optional extra
-// message added at the end of the message.
+// Gets the whole formatted progress bar.
 func (p *ProgressBar) String() string {
 	var units, out string
 	if p.Unit != "" && p.Units != "" {
