@@ -44,13 +44,22 @@ var DataUnits = []Unit{
 // Can be used uninitialized, using the default number of
 // 50 reports.
 type SpeedInfo struct {
-	reports     *ring.Ring
-	last        *time.Time
-	reportCount int
+	reports          *ring.Ring
+	last             time.Time
+	reportCount, buf int
+	init             bool
 }
 
 // Report n amount of progress made since last call.
 func (s *SpeedInfo) Report(n int) {
+	if s.init && time.Since(s.last).Nanoseconds() == 0 {
+		// If the call since last time is too fast, Since() might evaluate
+		// to literally 0, so if that's the case, buffer n and wait for the
+		// next call.
+		s.buf += n
+		return
+	}
+
 	if s.reports == nil {
 		if s.reportCount == 0 {
 			s.reportCount = defaultReportCount
@@ -58,12 +67,16 @@ func (s *SpeedInfo) Report(n int) {
 
 		s.reports = ring.New(s.reportCount)
 	}
-	if s.last != nil {
-		s.reports.Value = float64(n) / time.Since(*s.last).Seconds()
+
+	if s.init {
+		s.buf = 0
+		s.reports.Value = float64(n) / time.Since(s.last).Seconds()
 		s.reports = s.reports.Next()
+	} else {
+		s.init = true
 	}
-	now := time.Now()
-	s.last = &now
+
+	s.last = time.Now()
 }
 
 // Get the average speed.
