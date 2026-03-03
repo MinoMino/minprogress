@@ -4,17 +4,29 @@
 
 A progress bar for Go that can also track the speed of progress.
 
-Example of it used in conjuction with [minterm](https://github.com/MinoMino/minterm).
+Example of it used in conjunction with [minterm](https://github.com/MinoMino/minterm).
 ![GIF of progress bar using minterm.](http://minomino.org/screenshots/bYBB_2016-11-23_05-28-25.gif)
 
 # Usage
 
-###Import
+### Import
 ```go
 import "github.com/MinoMino/minprogress"
 ```
 
-###Simple Use
+### Defaults
+
+`NewProgressBar(total)` initializes with:
+
+- `Padding = 2`
+- `ReportCount = 50`
+- `OverallReportCount = 50`
+- `ReportsPerSample = 15`
+- `Width = AutoWidth` (`COLUMNS/4`, fallback width `30`)
+
+`DataUnits` use binary data sizes (`KiB = 1024`, `MiB = 1024*1024`, etc.).
+
+### Simple Use
 Make 5 units of progress every second while printing the bar every second:
 ```go
 const total = 50
@@ -48,13 +60,13 @@ Output:
 Done!
 ```
 
-###Advanced Use
+### Advanced Use
 Simulate concurrent file downloads and track download speed:
 ```go
 const total = 50
 const workerCount = 10
 pb := minprogress.NewProgressBar(total)
-pb.SpeedUnits = minprogress.DataUnits
+pb.SpeedUnits = minprogress.DataUnits // B, KiB, MiB, GiB, TiB
 // For nicer output, tell it the singular and plural name of the units.
 pb.Unit = "file"
 pb.Units = "files"
